@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Experiments with async / await / fetch / Promise.all()">
+    <meta name="author" content="John Lynch">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AAF TEST</title>
+    <style>
+        main {
+            display: grid;
+            grid-row-gap: 0.6vh;
+            grid-column-gap: 0.6vw;
+            grid-template-columns: repeat(2, fit-content(10vw));
+        }
+        
+        body, main {
+            background-color: #101;
+            color: #fc0;
+        }
+        div {
+            border: 2px solid #09f;
+            text-align: center;
+            font-size: 1.4vw;
+            padding: 1vw;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </main>
+
+
+
+    <script>
+        // Example of using Promise.all() to await and collect responses from several async fetch requests
+        // John Lynch / October 2021
+
+        const zip = (a0, a1) => a0.map((e, i) => [e, a1[i]]);
+
+        async function get_user_promise() {
+            const user = await fetch("https://randomuser.me/api");
+            return await user.json();
+        }
+        async function get_user_promises() {
+            let users = new Array(4).fill(null).map(get_user_promise);
+            users = await Promise.all(users);
+            for (user of users) {
+                console.log(user.results[0].name.first);
+                const pairs = zip(users, [...document.querySelector('main').children]);
+                pairs.forEach(([user, div]) => {
+                    div.innerText = user.results[0].name.first;                    
+                });
+            }
+        }
+        get_user_promises();
+    </script>
+</body>
+</html>
