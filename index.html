@@ -11,19 +11,35 @@
             display: grid;
             grid-row-gap: 0.6vh;
             grid-column-gap: 0.6vw;
-            grid-template-columns: repeat(2, fit-content(10vw));
+            grid-template-columns: repeat(8, fit-content(10vw));
+            padding-top: 5vw;
+            justify-content: center;
         }
         
         body, main {
             background-color: #101;
             color: #fc0;
         }
+        
         div {
             border: 2px solid #09f;
+            border-radius: 4px;
             text-align: center;
             font-size: 1.4vw;
             padding: 1vw;
+            display: none;
         }
+
+        #loading {
+            display: inline-block;
+            width: 12vw;
+            border: 1px solid #fdb;
+            border-radius: 6px;;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8vw;
+            padding: 0.6vw;
+        }
+
     </style>
 </head>
 <body>
@@ -32,6 +48,67 @@
         <div></div>
         <div></div>
         <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <section id="loading"></section>
     </main>
 
 
@@ -41,22 +118,30 @@
         // John Lynch / October 2021
 
         const zip = (a0, a1) => a0.map((e, i) => [e, a1[i]]);
+        const loading_msg = document.getElementById('loading');
+        let i = 0;
+        const t = setInterval(_ => {
+            loading_msg.innerText = `Getting names, hang on a sec please${'.'.repeat(i++ % 6)}`;
+        }, 300);
 
         async function get_user_promise() {
             const user = await fetch("https://randomuser.me/api");
             return await user.json();
         }
         async function get_user_promises() {
-            let users = new Array(4).fill(null).map(get_user_promise);
+            let users = new Array(64).fill(null).map(get_user_promise);
             users = await Promise.all(users);
             for (user of users) {
                 console.log(user.results[0].name.first);
                 const pairs = zip(users, [...document.querySelector('main').children]);
+                loading_msg.style.display = 'none';
                 pairs.forEach(([user, div]) => {
-                    div.innerText = user.results[0].name.first;                    
+                    div.innerText = user.results[0].name.first;
+                    div.style.display = 'block';
                 });
             }
         }
+        
         get_user_promises();
     </script>
 </body>
