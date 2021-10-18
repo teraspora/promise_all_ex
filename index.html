@@ -24,11 +24,13 @@
         
         div {
             border: 2px solid #66c2ff;
-            border-radius: 4px;
+            border-radius: 2vw;
             text-align: center;
             font-size: 1.4vw;
             padding: 1vw;
-            display: none;
+            background-color: #012;
+            opacity: 0;
+            transition: opacity 5s ease-out;
         }
 
         #loading {
@@ -40,6 +42,10 @@
             padding: 0.6vw;
             background-color: #fdb;
             color: #555;
+            opacity: 1;
+            transition: opacity 5s ease-out;
+            position: absolute;
+            left: 45vw;
         }
 
     </style>
@@ -139,9 +145,15 @@
                 const pairs = zip(users, divs);
                 pairs.forEach(([user, div]) => {
                     div.innerText = user.results[0].name.first;
-                    div.style.display = 'block';
+                    // div.style.display = 'block';
                 });
                 loading_msg.style.display = 'none';
+                loading_msg.style.opacity = 0;
+                window.setTimeout(_ => {
+                    divs.forEach(div => {
+                        div.style.opacity = 1;
+                    });
+                }, 1000);
             }
         }
         
