@@ -30,7 +30,7 @@
             padding: 1vw;
             background-color: #012;
             opacity: 0;
-            transition: opacity 5s ease-out;
+            transition: opacity 4s ease-out, transform 6s ease-in-out;
         }
 
         #loading {
@@ -47,6 +47,10 @@
             position: absolute;
             left: 45vw;
         }
+
+        /* #rose {
+            transition: transform 2s ease-in-out;
+        } */
 
     </style>
 </head>
@@ -69,7 +73,7 @@
         <div></div>
         <div></div>
         <div></div>
-        <div></div>
+        <div id="rose"></div>
         <div></div>
         <div></div>
         <div></div>
@@ -122,11 +126,18 @@
 
 
     <script>
+
         // Example of using Promise.all() to await and collect responses from several async fetch requests
         // John Lynch / October 2021
         const zip = (a, b) => a.map((e, i) => [e, b[i]]);
+        const rand = max => Math.random() * max;
         const loading_msg = document.getElementById('loading');
         const main = document.querySelector('main');
+        const divs = [...main.getElementsByTagName('div')];
+        divs.forEach(div => {
+            div.style.transition = 'transform 8s ease-in-out;'
+        });
+        
         let i = 0;
         const t = setInterval(_ => {
             loading_msg.innerText = `Getting names, hang on a sec please${'.'.repeat(i++ % 8)}`;
@@ -139,25 +150,30 @@
         async function get_user_promises() {
             let users = new Array(64).fill(null).map(get_user_promise);
             users = await Promise.all(users);
-            for (user of users) {
-                console.log(user.results[0].name.first);
-                const divs = [...document.querySelector('main').children].slice(0, -1);
-                const pairs = zip(users, divs);
-                pairs.forEach(([user, div]) => {
-                    div.innerText = user.results[0].name.first;
-                    // div.style.display = 'block';
+            const pairs = zip(users, divs);
+            pairs.forEach(([user, div]) => {
+                div.innerText = user.results[0].name.first;
+                // div.style.display = 'block';
+            });
+            loading_msg.style.display = 'none';
+            loading_msg.style.opacity = 0;
+            divs.forEach(div => {
+                div.style.opacity = 1;
+                setTimeout(_ => {
+                    div.style.transform = `rotate(${rand(1440) - 720}deg)`;
+                }, rand(16000));
+            });
+            i = 0;
+            document.body.addEventListener('click', ev => {
+                i++;
+                divs.forEach(div => {
+                    div.style.transform = `rotate(${i % 2 ? 0 : (rand(1440) - 720)}deg)`;
+                    div.style.zIndex = Math.ceil(rand(64));
                 });
-                loading_msg.style.display = 'none';
-                loading_msg.style.opacity = 0;
-                window.setTimeout(_ => {
-                    divs.forEach(div => {
-                        div.style.opacity = 1;
-                    });
-                }, 1000);
-            }
-        }
-        
+            });
+        }        
         get_user_promises();
+
     </script>
 </body>
 </html>
